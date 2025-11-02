@@ -11,6 +11,7 @@ M.show_config = config.show_config
 M.upload_file = upload.upload_file
 M.upload_directory = upload.upload_directory
 M.download_file = download.download_file
+M.select_config = config.select_config
 
 -- Setup plugin
 function M.setup(opts)
@@ -22,6 +23,7 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("SftpUploadDir", M.upload_directory, {})
   vim.api.nvim_create_user_command("SftpConfig", M.show_config, {})
   vim.api.nvim_create_user_command("SftpDownload", M.download_file, {})
+  vim.api.nvim_create_user_command("SftpSelectConfig", M.select_config, {})
 end
 
 return M
