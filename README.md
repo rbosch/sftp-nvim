@@ -32,15 +32,17 @@ return {
   end,
   cmd = {
     "SftpSetup",
-    "SftpUpload", 
+    "SftpUpload",
     "SftpConfig",
-    "SftpDownload"
+    "SftpDownload",
+    "SftpSelectConfig"
   },
   keys = {
     { "<leader>fs", "<cmd>SftpSetup<cr>", desc = "Setup SFTP config" },
     { "<leader>fu", "<cmd>SftpUpload<cr>", desc = "Upload current file via SFTP" },
     { "<leader>fc", "<cmd>SftpConfig<cr>", desc = "Show SFTP config" },
     { "<leader>fd", "<cmd>SftpDownload<cr>", desc = "Download file from remote via SFTP" },
+    { "<leader>fx", "<cmd>SftpSelectConfig<cr>", desc = "Select SFTP config" },
   },
 }
 ```
@@ -58,6 +60,7 @@ If you're developing this plugin locally, make sure to set `dev = true` in your 
 - `:SftpUploadDir` - Browse and upload files/directories from local to remote server
 - `:SftpDownload` - Browse and download files/folders from remote server
 - `:SftpConfig` - Show current SFTP configuration
+- `:SftpConfig` - Select a configuration
 
 ### Key Mappings (default)
 
@@ -66,42 +69,55 @@ If you're developing this plugin locally, make sure to set `dev = true` in your 
 - `<leader>fU` - Upload files/directories (with selection)
 - `<leader>fd` - Download files/folders from remote
 - `<leader>fc` - Show SFTP config
+- `<leader>fx` - Select SFTP config
 
 ### Configuration File
 
 The plugin creates a `.sftp-config.json` file in your project root with the following structure:
 
 ```json
-{
-  "host": "your-server.com",
-  "port": 22,
-  "username": "your-username",
-  "password": "your-password",
-  "remote_path": "/var/www/html",
-  "use_key": false,
-  "key_path": "~/.ssh/id_rsa"
-}
+[
+  {
+    "default": true,
+    "host": "your-server.com",
+    "port": 22,
+    "username": "your-username",
+    "password": "your-password",
+    "remote_path": "/var/www/html",
+    "use_key": false,
+    "key_path": "~/.ssh/id_rsa"
+  },
+  {
+    "host": "your-server.com",
+    "port": 22,
+    "username": "your-username",
+    "password": "your-password",
+    "remote_path": "/var/www/html",
+    "use_key": false,
+    "key_path": "~/.ssh/id_rsa"
+  }
+]
 ```
 
 ### Workflow
 
 #### Upload Workflow
+
 1. Open your project in Neovim
 2. Run `:SftpSetup` to configure your server connection
 
-**Upload Current File:**
-3. Open any file you want to upload
-4. Run `:SftpUpload` or press `<leader>fu` to upload the current file
+**Upload Current File:** 3. Open any file you want to upload 4. Run `:SftpUpload` or press `<leader>fu` to upload the current file
 
-**Upload Files/Directories:**
-3. Run `:SftpUploadDir` or press `<leader>fU`
-4. Select from the list of local files and directories:
-   - 📁 Directories are listed first
-   - 📄 Files are listed after directories
+**Upload Files/Directories:** 3. Run `:SftpUploadDir` or press `<leader>fU` 4. Select from the list of local files and directories:
+
+- 📁 Directories are listed first
+- 📄 Files are listed after directories
+
 5. If the remote file/directory exists, you'll get a confirmation dialog
 6. The entire directory structure will be preserved and uploaded recursively
 
 #### Download Workflow
+
 1. Ensure SFTP is configured (run `:SftpSetup` if needed)
 2. Run `:SftpDownload` or press `<leader>fd`
 3. Browse the remote files and folders:
@@ -127,7 +143,7 @@ The plugin is organized in a modular structure:
 lua/sftp-nvim/
 ├── init.lua        # Main entry point and command registration
 ├── config.lua      # Configuration management
-├── upload.lua      # File upload functionality  
+├── upload.lua      # File upload functionality
 └── download.lua    # File/folder download and browsing
 ```
 
@@ -140,11 +156,13 @@ lua/sftp-nvim/
 ## Authentication Methods
 
 ### SSH Key Authentication (Recommended)
+
 - Set `use_key` to `true` during setup
 - Specify path to your private key
 - Ensure your public key is added to the remote server's `~/.ssh/authorized_keys`
 
 ### Password Authentication
+
 - Set `use_key` to `false` during setup
 - Enter your password (stored in config file - be careful with file permissions)
 - Requires `sshpass` for non-interactive uploads
@@ -159,12 +177,14 @@ lua/sftp-nvim/
 ## Examples
 
 ### Setting up SSH key authentication:
+
 1. Generate SSH key: `ssh-keygen -t rsa -b 4096`
 2. Copy to server: `ssh-copy-id user@your-server.com`
 3. Run `:SftpSetup` and choose "key" authentication
 4. Specify key path (usually `~/.ssh/id_rsa`)
 
 ### Directory structure example:
+
 ```
 your-project/
 ├── .sftp-config.json
@@ -181,7 +201,7 @@ your-project/
 ## Recent Updates
 
 - ✨ **Added Download Feature**: Browse and download files/folders from remote server
-- 🎨 **Improved UI**: Replaced notifications with vim.ui.select() for better user experience  
+- 🎨 **Improved UI**: Replaced notifications with vim.ui.select() for better user experience
 - 📁 **Folder Support**: Download entire directories recursively
 - 🏗️ **Modular Architecture**: Split code into focused modules for better maintainability
 - 🔍 **Visual File Types**: Clear distinction between files and folders with icons
