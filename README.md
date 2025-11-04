@@ -76,7 +76,7 @@ If you're developing this plugin locally, make sure to set `dev = true` in your 
 The plugin creates a `.sftp-config.json` file in your project root with the following structure:
 
 ```json
-[
+{
   {
     "default": true,
     "host": "your-server.com",
@@ -96,7 +96,7 @@ The plugin creates a `.sftp-config.json` file in your project root with the foll
     "use_key": false,
     "key_path": "~/.ssh/id_rsa"
   }
-]
+}
 ```
 
 ### Workflow
